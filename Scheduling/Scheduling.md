@@ -18,7 +18,7 @@ spec:
 commands:
  ```kubectl get cs``` : get status of scheduler & controller-manager
  
- ### Lables & Selectors
+ ### Labels & Selectors
  `label` : help to give some caracters to objet
  `selector` : help to filter objets
  
@@ -43,3 +43,5 @@ spec:
 	- at the `top` : are the labels of the replicaset
 	- in creation of replicaset if area `matchLabels` match with `labels` the `Pod` will be created
 	- the `annotations` part wil coantain the information about the `deployment`
+	- combain selecting:
+		- `kubectl get pods --selector app=App1,funtion=Frontend`
