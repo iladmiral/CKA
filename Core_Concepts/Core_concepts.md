@@ -46,15 +46,15 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 	  labels: 
 	    app: myapp 
 		type: front-end 
-	spec: 
+    spec: 
 	  template: 
 	    metadata: 
 		  name: myapp-pod 
-		  labels: 
+          labels: 
 		    app: myapp 
 			type: front-end 
-		spec: 
-		   containers: 
+        spec: 
+		  containers: 
 		   - name: nginx-container 
 			 image: nginx 
 	  replicas: 3
@@ -68,25 +68,25 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 		```yaml
 		apiVersion: apps/v1  
 		kind: ReplicasSet 
-		metadata: 
+        metadata: 
 		  name: myapp-replicaset 
-		  labels: 
+          labels: 
 		    app: myapp 
 		    type: front-end 
-		spec: 
+        spec: 
 		  template: 
-			metadata: 
+            metadata: 
 			  name: myapp-pod 
-			  labels: 
+              labels: 
 			    app: myapp 
 			    type: front-end 
-			spec: 
-			  containers: 
+            spec: 
+              containers: 
 			    - name: nginx-container 
 				  image: nginx 
 		  replicas: 3 
 		  selector: 
-			matchLabels: 
+            matchLabels: 
 			  type: front-end
 		```
 		- See the created replicas: `kubectl get replicaset`
@@ -105,23 +105,23 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 	kind: Deployment 
 	metadata: 
 	  name: myapp-replicaset 
-	  labels: 
+      labels: 
 	    app: myapp 
 	    type: front-end 
-	spec: 
+    spec: 
 	  template: 
         metadata: 
 		  name: myapp-pod 
 		  labels: 
 		    app: myapp 
 		    type: front-end 
-		spec: 
-		  containers: 
+        spec: 
+          containers: 
 		    - name: nginx-container 
 			  image: nginx 
 	  replicas: 3 
 	  selector: 
-		matchLabels: 
+        matchLabels: 
 		  type: front-end 
 	```
 	- Create deployment: `kubectl create -f deployment-definition.yml`
@@ -158,8 +158,8 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 - Create a new namespace: 
 	``` yaml
 		apiVersion: v1 
-		Kind: Namespace 
-		Metadata: 
+        kind: Namespace 
+        metadata: 
 		  name:dev 
 	```
 
@@ -175,12 +175,12 @@ Kubectl get pods --all-namespaces 
 	- Create resource quota  
 	```yaml
 		apiVersion: v1 
-		Kind: ResourceQuota 
-		Metadata: 
+		kind: ResourceQuota 
+        metadata: 
 		  name: compute-quota 
 		  namespace: dev 
-		Spec: 
-		  hard: 
+        spec: 
+          hard: 
 			pods: "10" 
 			requests.cpu: "4" 
 			requests.memory: 5Gi 
