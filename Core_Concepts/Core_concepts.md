@@ -44,19 +44,19 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 	metadata: 
 	  name: myapp-rc 
 	  labels: 
-	    app: myapp 
+		app: myapp 
 		type: front-end 
-    spec: 
+	spec: 
 	  template: 
-	    metadata: 
+		metadata: 
 		  name: myapp-pod 
-          labels: 
-		    app: myapp 
+		  labels: 
+			app: myapp 
 			type: front-end 
-        spec: 
+		spec: 
 		  containers: 
-		   - name: nginx-container 
-			 image: nginx 
+			- name: nginx-container 
+			  image: nginx 
 	  replicas: 3
 	```
 	
@@ -68,25 +68,25 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 		```yaml
 		apiVersion: apps/v1  
 		kind: ReplicasSet 
-        metadata: 
+		metadata: 
 		  name: myapp-replicaset 
-          labels: 
-		    app: myapp 
-		    type: front-end 
-        spec: 
+		  labels: 
+			app: myapp 
+			type: front-end 
+		spec: 
 		  template: 
-            metadata: 
-			  name: myapp-pod 
-              labels: 
-			    app: myapp 
-			    type: front-end 
-            spec: 
-              containers: 
-			    - name: nginx-container 
+		  metadata: 
+			name: myapp-pod 
+			labels: 
+			  app: myapp 
+			  type: front-end 
+			spec: 
+			  containers: 
+				- name: nginx-container 
 				  image: nginx 
 		  replicas: 3 
 		  selector: 
-            matchLabels: 
+			matchLabels: 
 			  type: front-end
 		```
 		- See the created replicas: `kubectl get replicaset`
@@ -112,7 +112,7 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 	  template: 
         metadata: 
 		  name: myapp-pod 
-		  labels: 
+          labels: 
 		    app: myapp 
 		    type: front-end 
         spec: 
@@ -157,10 +157,10 @@ Replication controller-> could run multiple instances of pod -> Hight Availabili
 	```
 - Create a new namespace: 
 	``` yaml
-		apiVersion: v1 
+	    apiVersion: v1 
         kind: Namespace 
         metadata: 
-		  name:dev 
+          name:dev 
 	```
 
 Or 
