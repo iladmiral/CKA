@@ -75,3 +75,116 @@ spec:
 		- taints & tolerations does not tell the pods to go the a specific node, intead it tell nodes to only accept pods with the tolerations
 - a `master` node is a node like other nodes with a tolerations 
 	- `kubectl describe node kubemaster | grep Taint`
+
+### Node selectors, Node affinity
+to force a Pod to be in specific node, we have 2 methods:
+1.   node selectors:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  -  image: nginx
+	 name: nginx
+  nodeSelector:
+	size: Large  # --> will put the pod in the largest Node
+```
+	
+- node that the node have to be label with the same caractrestic.
+	- `kubectl label nodes [node-name] [label-key]=[label-value]`
+2. node affinity:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  -  image: nginx
+	 name: nginx
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+	    nodeSelectorTerms:
+		  - matchExpressions:
+		      - key : size
+			    operator: In # NotIn, Exists
+				values:
+				  - Large
+```
+	
+- types of node affinity:
+	- Available
+		- `requiredDuringSchedulingIgnoredDuringExecution`
+		- `preferredDuringSchedulingIgnoredDuringExecution:`
+	- Planned
+		-  `requiredDuringSchedulingRequiredDuringExecution`
+-  `DuringScheduling` pod not exists and is created for te first time
+-  `DuringExecution`  pod exists
+
+	## lab
+	```yaml
+	## blue
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: blue
+	  labels:
+		app: frontend
+	spec:
+	  template:
+		metadata:
+		  name: nginx
+		  labels:
+			app: frontend
+		spec:
+		  containers:
+			- name: nginx
+			  image: nginx
+		  affinity:
+			nodeAffinity:
+			  requiredDuringSchedulingIgnoredDuringExecution:
+				nodeSelectorTerms:
+				  - matchExpressions:
+					  - key: color
+						operator: In
+						values:
+						  -  blue
+	  replicas: 3
+	  selector:
+		matchLabels:
+		  app: frontend
+	```
+	
+	```yaml
+	## red
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: red 
+	  labels:
+		app: frontend
+	spec:
+	  template:
+		metadata:
+		  name: nginx
+		  labels:
+			app: frontend
+		spec:
+		  containers:
+			- name: nginx
+			  image: nginx
+		  affinity:
+			nodeAffinity:
+			  requiredDuringSchedulingIgnoredDuringExecution:
+				nodeSelectorTerms:
+				  - matchExpressions:
+					  - key: node-role.kubernetes.io/master
+						operator: Exists
+	  replicas: 2
+	  selector:
+		matchLabels:
+		  app: frontend
+	```
