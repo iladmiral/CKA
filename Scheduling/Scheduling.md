@@ -183,7 +183,7 @@ spec:
 				  - matchExpressions:
 					  - key: node-role.kubernetes.io/master
 						operator: Exists
-	  replicas: 3
+	  replicas: 2
 	  selector:
 		matchLabels:
 		  app: frontend
