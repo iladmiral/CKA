@@ -1,2 +1,2 @@
-# cka
-Preparation for CKA certificate
+# CKA
+Preparation Certified Kubernetes Administrator (CKA)
