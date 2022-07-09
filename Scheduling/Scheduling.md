@@ -230,10 +230,8 @@ daemon Sets run a copy of the pod in each node of the cluser
 		- a `kube-proxy` agent is a must for every pod, a good use case of daemonset
 		- networking agent as `weave-net`
 	- `kubectl get daemonsets` get daemon sets
-	- DaemonSet definition
-	
-					
-					
+- DaemonSet definition
+						
 ```yaml
 apiVersion: apps/v1
 kind: DaemonSet
@@ -252,4 +250,34 @@ spec:
 			containers:
 			- name: monitoring-agent
 				image: monitoring-agent
+```
+
+### static pods
+- if there is no api kube-apiserver, no ETCD, no controller-Manager, no kube-scheduler
+- kublet will create pods from  `/etc/kubernetes/manifests` automaticly
+- it can ensure that the pod is still a live
+- it the files in this directory is modified the kubelet will create a new pod and delete the old
+- if the file is deleted the pod will be deleted too
+- it could only create `pods`
+- the directory is passed as a config when creating a service 
+	- kubelet.service : `--pod-manifest-path=/etc/kubernetes/manofestes`
+	- OR : add to kubelet.service `--config=kubeconfig.yaml`
+	- kubeconfig.yaml : `staticPodPath: /etc/kubernetes/manifestes`
+- use case: create a pods for master node
+	- out the yamls files in manifestes directories than 
+		- etcd.yaml, apiserver.yaml, controller-Manager.yaml 
+		- the pods will be created aumomaticly
+	- #### Lab
+		- `kubectl gets pods --all-namespaces`
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-busybox
+spec:
+  containers:
+  - command:
+    - sleep 1000
+    image: busybox
+    name: static-busybox
 ```
