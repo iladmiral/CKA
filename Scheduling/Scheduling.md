@@ -223,3 +223,33 @@ spec:
         memory: 256Mi
       type: Container
  ```
+ 
+ ### Daemon Sets
+daemon Sets run a copy of the pod in each node of the cluser
+	- used for monitoring solution, logs viewer
+		- a `kube-proxy` agent is a must for every pod, a good use case of daemonset
+		- networking agent as `weave-net`
+	- `kubectl get daemonsets` get daemon sets
+	- DaemonSet definition
+	
+					
+					
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+	name: monitoring-agent
+	namespace: kube-system
+spec:
+	selector:
+		matchLabels:
+			app: monitoring-agent
+	template:
+		metadata:
+			labels:
+				app: monitoring-agent
+		spec:
+			containers:
+			- name: monitoring-agent
+				image: monitoring-agent
+```
