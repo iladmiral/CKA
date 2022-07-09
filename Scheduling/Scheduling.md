@@ -188,3 +188,38 @@ spec:
 		matchLabels:
 		  app: frontend
 	```
+
+### Taints and toleration Vs node affinity
+- Taints and telerations garentie that node could accept just a tainted pods 
+	- but pods could be placed on node with no taints
+- Node affinity garenty the the pod be placed in spicific node
+	- but node could accept other pods
+- the solution to place a pods in specifics nodes is:
+	- combain taints & tolerations and node affinity
+
+### Resource requirements and limits
+- The scheduler will place pods in node that satisfy (cpu, memory, disk) requirments
+	- If there is no space (cpu, memory, disk) the pods will be in pending state.
+	- in events it will show : `Insufficient cpu`
+- by `default` k8s assume the the pods requirs: 0,5 cpu, 256mi
+	- minimum memory 0.1 mi -> 100 m
+- Docker container has no limits of resources, if it need more resources il will get it until it take all of resource of pod
+	- by `default` container is limited of 1vCPU, 512Mi
+		- if want to change it add `limits` to `resources` section of pod
+		- container can't take more than the limit of cpu
+		- container can use more memory resources than it's limits
+			- if the pod try the use more memoy than it's limits contenly -> it will be terminated
+		- to note: `required` is initialy used by the pods
+```yaml
+  apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: mem-limit-range
+  spec:
+    limits:
+    - default:
+        memory: 512Mi
+      defaultRequest:
+        memory: 256Mi
+      type: Container
+ ```
