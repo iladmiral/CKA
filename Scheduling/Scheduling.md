@@ -281,3 +281,25 @@ spec:
     image: busybox
     name: static-busybox
 ```
+### Multiple Schedulers:
+if the default scheduler doesn't satisfy your needs, and you want to use your own scheduler
+-  you can write your own scheduler and package it, than deploy it as a default scheduler.
+-  or as an additionnel scheduler in k8s cluster.
+- k8s cluster can have multiple schedulers at the same time.
+
+how to deploy k8s scheduler?
+1. wget https://dl.k8s.io/v1.24.3/bin/linux/amd64/kube-scheduler
+2. you could use the same binary used for default kube scheduler
+3. run the scheduler as a service
+	1. ex: my-custum-scheduler.service
+	```bash
+	--scheduler-name= my-custum-scheduler
+	```
+
+- in k8s cluster, just 1 scheduler is active as leader
+	- this is configured by : `--leader-elect= true`
+- the scheduler is deployed as a pod in kube-system namespace
+- see the schedlers: `kubectl get pods -n kube-system`
+- use specific scheduler to schedule a pod: `spec.schedulerName: my-custum-scheduler`
+- see which scheduler is used -> this info in events `kubectl get events`
+- see the logs: `kubectl logs my-custom-scheduler -n kube-system`
