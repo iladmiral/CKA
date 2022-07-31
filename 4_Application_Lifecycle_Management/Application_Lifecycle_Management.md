@@ -70,3 +70,94 @@ Configuring applications comprises of understanding the following concepts:
 	   command: ["sleep2.0"] # --> ENTRYPOINT ["sleep"]
 	   args: ["10"] # --> CMD ["5"]
 	```
+
+#### Configure Environment Varaibles in Applications
+- use the environment variable
+	```yaml
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: ubuntu-sleeper-pod
+	spec:
+	 containers:
+	 - name: ubuntu-sleeper
+	   image: ubuntu-sleeper
+	   ports:
+	     - caintainerPort: 8080
+	   env:
+	     - name: 
+	       value: 
+	```
+
+- use ConfigMap
+	``` yaml
+	env:
+	  - name: APP_COLOR
+	    valueFrom: 
+	      configMapKeyRef:
+	```
+
+- use secret:
+	```yaml
+	env:
+	  - name: APP_COLOR
+	    valueFrom:
+	      secretKeyRef:
+	```
+
+#### Configuring ConfigMaps in Applications
+- configMap used when we have a log of data, we put together in one file
+1. create the configMap
+	1. imperative:
+		1. `kubectl create configmap <config-name> --from-literal=<key>=<value>`
+		2. `kubectl create configmap <config-name> --from-file=<path-to-file>`
+	2. declarative:
+		```yaml
+		apiVersion: v1
+		kind: ConfigMap
+		metadata:
+		  name: app-config
+		data:
+		  APP_COLOR: blue
+		  APP_MODE: prod
+	    ```
+- view configmaps: `kubectl get configmaps`
+- describe configmap: `kubectl describe configmaps`
+1. inject then into the pod
+```yaml
+spec:
+  containers:
+    envFrom:
+      - configMapRef:
+          name: app-config
+```
+
+- we can inject data as : single ENV, Volume
+- lab:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2022-07-31T18:51:58Z"
+  labels:
+    name: webapp-color
+  name: webapp-color
+  namespace: default
+  resourceVersion: "640"
+  uid: 2ca41485-ca71-44fb-8d12-75e1f307a9c8
+spec:
+  containers:
+    - name: webapp-color
+      image: kodekloud/webapp-color
+      imagePullPolicy: Always      
+      envFrom:
+        - configMapRef:
+            name: webapp-config-map
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File      
+      volumeMounts:
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access-wt2xp
+          readOnly: true
+```
