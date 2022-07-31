@@ -161,3 +161,77 @@ spec:
           name: kube-api-access-wt2xp
           readOnly: true
 ```
+
+#### Secrets in Applications:
+1. create a secret
+	1. imperative 
+		1. `kubectl create secret generic <secret-name> --from-literal=<key>=<value>`
+		2. `kubectl create secret generic <secret-name --from-file=<path-to-file>`
+	2. declarative:
+		1. 
+	```yaml
+	apiVersion: v1
+	kind: Secret
+	metedata:
+	  name: app-secret
+	data:
+	DB_HOST: sqds=!
+	DB_USER: sds)?=
+	DB_Password: qdsq)==
+	```
+	- get secret: `kubectl get secrets`
+	- describe secret: `kubectl describe secrets`
+	- get yaml file of secret : `kubectl get secret app-secret -o yaml`
+2. injected to a pod
+```yaml
+spec:
+  containers:
+  - name:
+    envFrom:
+      - secretRef:
+          name: app-secret
+```
+
+- for the secret as volume file:
+```yaml
+volumes:
+- name: app-secret-volume
+  secret: 
+    secretName: app-secret
+```
+- `ls /opt/app-secret-volumes`
+	- DB_Host, DB_Password, DB_User
+
+#### Multi-containers pod
+- sometimes we need to have 2 container in same pod 
+	- use case: web-service, log agent
+	- scale pod will scale containers togother
+
+```yaml
+spec:
+  containers:
+  - name: simple-app # -> container 1
+    image: simple-app
+  - name: log-agent # -> container 2
+    image: log-agent
+```
+
+#### **initContainer**
+- do action once the container is created
+- if one of initcontainer failed k8s will restart pod until all initcontainers success
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox:1.28
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  initContainers:
+    - name: init-myservice
+      image: busybox
+      command: ['sh', '-c', 'git clone <some-repository-that-will-be-used-by-application> ; done;']
