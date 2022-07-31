@@ -37,3 +37,36 @@ Configuring applications comprises of understanding the following concepts:
 -   Configuring Command and Arguments on applications   
 -   Configuring Environment Variables
 -   Configuring Secrets
+
+### Application Commands
+
+- In docker
+	- The container only lives as long as the process inside it is lives, if the web service inside the container cruches/stop -> the container exit
+	- If you look at the dockerfile the  `CMD ["nginx"]` specify whitch application will run 
+	- Unlike virtual machines, containers are not meant to hist operating system
+
+#### How do you specify a different command to start the container?
+- One option is to append to the docker run command and that way it overrides the default command specified whtin the image
+	```bash
+	$ docker run ubuntu sleep 5
+	```
+- make this change parmanent 
+	```Dockerfile
+	FROM Ubuntu
+	CMD sleep 5
+	```
+
+- In k8s
+	- anything is appended to docker will go into `args`  in the pod definition
+	```yaml
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: ubuntu-sleeper-pod
+	spec:
+	 containers:
+	 - name: ubuntu-sleeper
+	   image: ubuntu-sleeper
+	   command: ["sleep2.0"] # --> ENTRYPOINT ["sleep"]
+	   args: ["10"] # --> CMD ["5"]
+	```
